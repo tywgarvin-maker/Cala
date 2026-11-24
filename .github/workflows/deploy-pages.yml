@@ -123,6 +123,8 @@ jobs:
           touch _site/.nojekyll
           test -s _site/index.html
           test -s _site/cala.js
+          # Fail the publish if the architecture renderer is syntactically invalid.
+          if [ -f _site/house-art-v2.js ]; then node --check _site/house-art-v2.js; fi
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
       - name: Upload website
