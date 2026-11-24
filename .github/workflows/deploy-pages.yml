@@ -12,6 +12,7 @@ on:
       - 'showcase.js'
       - 'organic.js'
       - 'foundation-flat.js'
+      - 'house-art.js'
       - 'art/**'
       - '.github/workflows/deploy-pages.yml'
   workflow_dispatch:
@@ -91,6 +92,18 @@ jobs:
           text=page.read_text()
           if 'src="foundation-flat.js"' not in text:
               text=text.replace('</body>', '<script src="foundation-flat.js"></script></body>')
+              page.write_text(text)
+          PY
+          fi
+          # House art is a reversible rendering layer; it does not change save data.
+          if [ -f house-art.js ]; then
+            cp house-art.js _site/house-art.js
+            python3 - <<'PY'
+          from pathlib import Path
+          page=Path('_site/index.html')
+          text=page.read_text()
+          if 'src="house-art.js"' not in text:
+              text=text.replace('</body>', '<script src="house-art.js"></script></body>')
               page.write_text(text)
           PY
           fi
