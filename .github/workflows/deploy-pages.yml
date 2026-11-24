@@ -10,6 +10,7 @@ on:
       - 'painting.js'
       - 'emergent.js'
       - 'showcase.js'
+      - 'organic.js'
       - 'art/**'
       - '.github/workflows/deploy-pages.yml'
   workflow_dispatch:
@@ -55,6 +56,18 @@ jobs:
           else
             echo 'Upload Cala_GitHub_Pages_Ready.zip to publish Cala.' >&2
             exit 1
+          fi
+          # A small, editable overlay replaces the strict pattern detector.
+          if [ -f organic.js ]; then
+            cp organic.js _site/organic.js
+            python3 - <<'PY'
+          from pathlib import Path
+          page=Path('_site/index.html')
+          text=page.read_text()
+          if 'src="organic.js"' not in text:
+              text=text.replace('</body>', '<script src="organic.js"></script><script>refreshRomanSpaces();draw();</script></body>')
+              page.write_text(text)
+          PY
           fi
           # First-visit showcase is injected after the original startup script.
           if [ -f showcase.js ]; then
