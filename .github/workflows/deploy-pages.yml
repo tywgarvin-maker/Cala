@@ -31,6 +31,7 @@ jobs:
     steps:
       - name: Get source
         uses: actions/checkout@v4
+      # Deploy from the complete uploaded Cala bundle until editable source is promoted.
       - name: Prepare Cala website
         shell: bash
         run: |
