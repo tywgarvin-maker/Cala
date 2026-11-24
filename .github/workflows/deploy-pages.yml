@@ -9,6 +9,7 @@ on:
       - 'blocks.js'
       - 'painting.js'
       - 'emergent.js'
+      - 'showcase.js'
       - 'art/**'
       - '.github/workflows/deploy-pages.yml'
   workflow_dispatch:
@@ -54,6 +55,18 @@ jobs:
           else
             echo 'Upload Cala_GitHub_Pages_Ready.zip to publish Cala.' >&2
             exit 1
+          fi
+          # First-visit showcase is injected after the original startup script.
+          if [ -f showcase.js ]; then
+            cp showcase.js _site/showcase.js
+            python3 - <<'PY'
+          from pathlib import Path
+          page=Path('_site/index.html')
+          text=page.read_text()
+          if 'src="showcase.js"' not in text:
+              text=text.replace('</body>', '<script src="showcase.js"></script></body>')
+              page.write_text(text)
+          PY
           fi
           touch _site/.nojekyll
           test -s _site/index.html
