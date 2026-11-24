@@ -1,0 +1,68 @@
+name: Publish Cala to GitHub Pages
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Cala_GitHub_Pages_Ready.zip'
+      - 'index.html'
+      - 'cala.js'
+      - 'blocks.js'
+      - 'painting.js'
+      - 'emergent.js'
+      - 'art/**'
+      - '.github/workflows/deploy-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: cala-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get source
+        uses: actions/checkout@v4
+      - name: Prepare Cala website
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p _site
+          if [ -f index.html ] && [ -f cala.js ]; then
+            # Once unzipped source has been committed, prefer those files.
+            cp index.html cala.js blocks.js painting.js emergent.js _site/
+            if [ -d art ]; then cp -a art _site/art; fi
+          elif [ -f Cala_GitHub_Pages_Ready.zip ]; then
+            unzip -q Cala_GitHub_Pages_Ready.zip -d extracted
+            if [ -f extracted/Cala_GitHub_Pages_Ready/index.html ]; then
+              cp -a extracted/Cala_GitHub_Pages_Ready/. _site/
+            elif [ -f extracted/index.html ]; then
+              cp -a extracted/. _site/
+            else
+              echo 'Cannot locate index.html in Cala ZIP' >&2
+              exit 1
+            fi
+          else
+            echo 'Upload Cala_GitHub_Pages_Ready.zip to publish Cala.' >&2
+            exit 1
+          fi
+          touch _site/.nojekyll
+          test -s _site/index.html
+          test -s _site/cala.js
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Upload website
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - name: Deploy website
+        id: deployment
+        uses: actions/deploy-pages@v4
