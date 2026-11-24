@@ -30,9 +30,9 @@
   function window(g,q,pal){
     const outer=rect(q,.31,.30,.69,.69),inner=rect(q,.345,.345,.655,.655);
     poly(g,outer,pal.stone);poly(g,inner,'#554b42');
-    poly(g,rect(q,.365,.37,.635,.625),'#354f54');
-    stroke(g,[p4(q,.50,.36),p4(q,.50,.64)],'#b8a384',.019);
-    stroke(g,[p4(q,.365,.49),p4(q,.635,.49)],'#b8a384',.018);
+    poly(g,rect(q,.365,.37,.635,.625),'#4c3b31');
+    stroke(g,[p4(q,.50,.36),p4(q,.50,.64)],'#a47a58',.023);
+    for(let j=0;j<3;j++){const v=.40+j*.085;stroke(g,[p4(q,.38,v),p4(q,.48,v)],'#8e684b',.012);stroke(g,[p4(q,.52,v),p4(q,.62,v)],'#8e684b',.012)}
     stroke(g,[p4(q,.27,.70),p4(q,.73,.70)],'#e4c6a4',.042);
     stroke(g,[p4(q,.29,.74),p4(q,.70,.74)],'#8a745c',.012);
   }
