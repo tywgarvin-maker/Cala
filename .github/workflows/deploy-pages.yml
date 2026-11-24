@@ -13,6 +13,7 @@ on:
       - 'organic.js'
       - 'foundation-flat.js'
       - 'house-art.js'
+      - 'house-art-v2.js'
       - 'art/**'
       - '.github/workflows/deploy-pages.yml'
   workflow_dispatch:
@@ -104,6 +105,18 @@ jobs:
           text=page.read_text()
           if 'src="house-art.js"' not in text:
               text=text.replace('</body>', '<script src="house-art.js"></script></body>')
+              page.write_text(text)
+          PY
+          fi
+          # More authored Roman buildings, loaded after first-pass artwork.
+          if [ -f house-art-v2.js ]; then
+            cp house-art-v2.js _site/house-art-v2.js
+            python3 - <<'PY'
+          from pathlib import Path
+          page=Path('_site/index.html')
+          text=page.read_text()
+          if 'src="house-art-v2.js"' not in text:
+              text=text.replace('</body>', '<script src="house-art-v2.js"></script></body>')
               page.write_text(text)
           PY
           fi
