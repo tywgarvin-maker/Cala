@@ -11,6 +11,7 @@ on:
       - 'emergent.js'
       - 'showcase.js'
       - 'organic.js'
+      - 'foundation-flat.js'
       - 'art/**'
       - '.github/workflows/deploy-pages.yml'
   workflow_dispatch:
@@ -78,6 +79,18 @@ jobs:
           text=page.read_text()
           if 'src="showcase.js"' not in text:
               text=text.replace('</body>', '<script src="showcase.js"></script></body>')
+              page.write_text(text)
+          PY
+          fi
+          # Apply a level construction plane without discarding the painted coast.
+          if [ -f foundation-flat.js ]; then
+            cp foundation-flat.js _site/foundation-flat.js
+            python3 - <<'PY'
+          from pathlib import Path
+          page=Path('_site/index.html')
+          text=page.read_text()
+          if 'src="foundation-flat.js"' not in text:
+              text=text.replace('</body>', '<script src="foundation-flat.js"></script></body>')
               page.write_text(text)
           PY
           fi
